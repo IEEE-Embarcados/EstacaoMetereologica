@@ -4,7 +4,7 @@
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7);   //Definição de portas do display.
 DHT dht(A5, DHT11);   //Definição de porta analógica e tipo do sensor DHT.
 float temperatura, humidade;
-int luminosidade;
+int luminosidade, LDR = A4;
 
 
 void setup()
@@ -40,7 +40,7 @@ void loop()
 {
   temperatura = dht.readTemperature();
   humidade = dht.readHumidity();
-  luminosidade = 0;   //MUDAR P/ LEITURA DO SENSOR DE LUMINOSIDADE E APAGAR COMENTÁRIO.
+  luminosidade = analogRead(LDR);   //Lê valor (0 ~ 1023).
 
   if (isnan(temperatura) || isnan(humidade)) {
     Serial.println("Falha na leitura do sensor!");
