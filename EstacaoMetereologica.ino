@@ -1,10 +1,10 @@
 #include <LiquidCrystal.h>   //Biblioteca do LCD.
 #include <DHT.h>   //Biblioteca do DHT.
 
-LiquidCrystal lcd(2, 3, 4, 5, 6, 7);   //Definição de portas do display.
+LiquidCrystal lcd(7, 6, 5, 4, 3, 2);   //Definição de portas do display.
 DHT dht(A5, DHT11);   //Definição de porta analógica e tipo do sensor DHT.
-float temperatura, humidade;
-int luminosidade, LDR = A4;
+float temperatura, umidade;
+int luminosidade, LDR = A4, lux = 0;
 
 
 void setup()
@@ -29,7 +29,7 @@ void setup()
   lcd.setCursor(18, 0);
   lcd.print("C");
   lcd.setCursor(2, 1);
-  lcd.print("Humidade: ");
+  lcd.print("Umidade: ");
   lcd.setCursor(17, 1);
   lcd.print("%");
   lcd.setCursor(1, 2);
@@ -39,10 +39,11 @@ void setup()
 void loop()
 {
   temperatura = dht.readTemperature();
-  humidade = dht.readHumidity();
+  umidade = dht.readHumidity();
   luminosidade = analogRead(LDR);   //Lê valor (0 ~ 1023).
+  lux = map(luminosidade, 0, 1023, 0, 100);
 
-  if (isnan(temperatura) || isnan(humidade)) {
+  if (isnan(temperatura) || isnan(umidade)) {
     Serial.println("Falha na leitura do sensor!");
   } else {
     //Impressão de temperatura no monitor serial:
@@ -53,20 +54,20 @@ void loop()
     lcd.setCursor(14, 0);
     lcd.print(temperatura, 1);
     
-    //Impressão de humidade no monitor serial:
-    Serial.print("Humidade: ");
-    Serial.print(humidade, 1);
+    //Impressão de umidade no monitor serial:
+    Serial.print("Umidade: ");
+    Serial.print(umidade, 1);
     Serial.println("%");
     //Impressão de humidade no display:
     lcd.setCursor(12, 1);
-    lcd.print(humidade, 1);
+    lcd.print(umidade, 1);
 
     //Impressão de luminosidade no monitor serial:
     Serial.print("Luminosidade: ");
-    Serial.println(luminosidade);
+    Serial.println(lux);
     //Impressão de luminosidade no display:
     lcd.setCursor(15, 2);
-    lcd.print(luminosidade);
+    lcd.print(lux);
   }
-  delay(5000);   //Intervalo de leitura a cada 5s.
+  delay(1000);   //Intervalo de leitura a cada 5s.
 }
